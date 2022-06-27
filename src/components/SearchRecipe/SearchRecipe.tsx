@@ -2,6 +2,8 @@ import React from "react";
 
 import { useApi } from "../../hooks/useApi";
 import { ISingleRecipe } from "../../types";
+import SingleRecipe from "../SingleRecipe/SingleRecipe";
+import { Recipes, SearchRecipeWrapper } from "./SearchRecipe.styles";
 
 const data2: ISingleRecipe[] = [
   {
@@ -10,6 +12,11 @@ const data2: ISingleRecipe[] = [
     image: "https://spoonacular.com/recipeImages/654959-312x231.jpg",
     nutrition: {
       nutrients: [
+        {
+          name: "Fat",
+          amount: 10.2344,
+          unit: "g",
+        },
         {
           name: "Fat",
           amount: 10.2344,
@@ -39,7 +46,22 @@ const SearchRecipe = () => {
   // const url = `https://api.spoonacular.com/recipes/complexSearch?query=pasta&maxFat=50&number=5&apiKey=${API_URL}`;
   // const { data, isLoading, errorMessage } = useApi(url);
 
-  return <div></div>;
+  return (
+    <SearchRecipeWrapper>
+      <Recipes>
+        {data2 &&
+          data2.map((recipe) => (
+            <SingleRecipe
+              key={recipe.id}
+              id={recipe.id}
+              title={recipe.title}
+              image={recipe.image}
+              nutrition={recipe.nutrition}
+            />
+          ))}
+      </Recipes>
+    </SearchRecipeWrapper>
+  );
 };
 
 export default SearchRecipe;
