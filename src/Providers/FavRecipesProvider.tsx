@@ -6,7 +6,6 @@ import {
 } from "../types";
 
 export const FavRecipesContext = createContext<IFavRecipesContext>({
-  favRecipes: [],
   handleToggleFavRecipes: () => {},
 });
 
@@ -14,18 +13,34 @@ export const FavRecipesProvider = ({ children }: IFavRecipesProvider) => {
   const [favRecipes, setFavRecipes] = useState<ISingleRecipe[]>([]);
 
   const handleToggleFavRecipes = (recipe: ISingleRecipe) => {
-    if (!favRecipes.find((el) => el.id === recipe.id)) {
-      setFavRecipes([recipe, ...favRecipes]);
+    const storedRecipes = JSON.parse(
+      localStorage.getItem("favRecipes") || "[]"
+    );
+
+    if (!storedRecipes.find((el: { id: number }) => el.id === recipe.id)) {
+      localStorage.setItem(
+        "favRecipes",
+        JSON.stringify([
+          recipe,
+          ...JSON.parse(localStorage.getItem("favRecipes") || "[]"),
+        ])
+      );
+      setFavRecipes(storedRecipes);
     } else {
-      const currentFavRecipes = favRecipes.filter((el) => el.id !== recipe.id);
-      setFavRecipes([...currentFavRecipes]);
+      const currentFavRecipes = storedRecipes.filter(
+        (el: { id: number }) => el.id !== recipe.id
+      );
+      localStorage.setItem(
+        "favRecipes",
+        JSON.stringify([...currentFavRecipes])
+      );
+      setFavRecipes(storedRecipes);
     }
   };
 
   return (
     <FavRecipesContext.Provider
       value={{
-        favRecipes,
         handleToggleFavRecipes,
       }}
     >

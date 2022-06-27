@@ -4,7 +4,7 @@ import { useApi } from "../../hooks/useApi";
 import { FavRecipesContext } from "../../Providers/FavRecipesProvider";
 import { ISingleRecipe } from "../../types";
 import SingleRecipe from "../SingleRecipe/SingleRecipe";
-import { Recipes, SearchRecipeWrapper } from "./SearchRecipe.styles";
+import { Recipes, RecipesWrapper } from "./SearchRecipe.styles";
 
 const data2: ISingleRecipe[] = [
   {
@@ -49,7 +49,7 @@ const SearchRecipe = () => {
   const { handleToggleFavRecipes } = useContext(FavRecipesContext);
 
   return (
-    <SearchRecipeWrapper>
+    <RecipesWrapper>
       <Recipes>
         {data2 &&
           data2.map((recipe) => (
@@ -63,7 +63,7 @@ const SearchRecipe = () => {
             />
           ))}
       </Recipes>
-    </SearchRecipeWrapper>
+    </RecipesWrapper>
   );
 };
 

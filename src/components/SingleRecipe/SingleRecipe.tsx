@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { FavRecipesContext } from "../../Providers/FavRecipesProvider";
 import { ISingleRecipe } from "../../types";
 import {
@@ -16,16 +16,13 @@ const SingleRecipe = ({
   nutrition,
   onClick,
 }: ISingleRecipe) => {
-  const { favRecipes } = useContext(FavRecipesContext);
+  const StoredRecipes = JSON.parse(localStorage.getItem("favRecipes") || "[]");
 
-  if (favRecipes) {
-  console.log(favRecipes);
-  }
 
   return (
     <SingleRecipeWrapper>
       <button onClick={onClick}>
-        {favRecipes.find((el) => el.id === id) ? (
+        {StoredRecipes.find((el: { id: number }) => el.id === id) ? (
           <FavFillIcon />
         ) : (
           <FavOutlineIcon />

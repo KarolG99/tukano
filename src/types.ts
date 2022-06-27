@@ -17,7 +17,6 @@ export type ISingleRecipe = {
 
 // FavRecipesProvider.ts
 export type IFavRecipesContext = {
-  favRecipes: ISingleRecipe[];
   handleToggleFavRecipes: (recipe: ISingleRecipe) => void;
 };
 

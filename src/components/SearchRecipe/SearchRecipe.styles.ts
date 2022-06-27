@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const SearchRecipeWrapper = styled.article`
+export const RecipesWrapper = styled.article`
   display: flex;
   justify-content: center;
   padding: 20px;
