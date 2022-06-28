@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+
 import { RecipesContext } from "../../Providers/RecipesProvider";
 import { ISingleRecipe } from "../../types";
 import { Recipes, RecipesWrapper } from "../SearchRecipe/SearchRecipe.styles";

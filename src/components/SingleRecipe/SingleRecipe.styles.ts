@@ -5,9 +5,14 @@ import { ReactComponent as FavOutline } from "../../assets/icons/favouriteOutlin
 import { ReactComponent as FavFill } from "../../assets/icons/favouriteFill.svg";
 import { ReactComponent as Comment } from "../../assets/icons/comment.svg";
 
+interface Props {
+  isRecipeInfo: boolean;
+}
+
 export const SingleRecipeWrapper = styled.section`
   width: 90%;
-  max-width: fit-content;
+  max-width: ${({ isRecipeInfo }: Props) =>
+    isRecipeInfo ? "500px" : "400px"};
   height: fit-content;
   padding: 15px 10px;
   margin: 12px;
@@ -25,16 +30,33 @@ export const SingleRecipeWrapper = styled.section`
   }
 
   h3 {
-    margin: 3px 0;
+    margin: 3px;
+    font-size: 1.5rem;
+    color: ${({ theme }) => theme.colors.primary};
+
   }
 
   p {
-    line-height: 130%;
+    line-height: 150%;
 
     &.nutrients {
       font-weight: 500;
       margin-bottom: 2px;
     }
+
+    &.header-p {
+      font-weight: bold;
+    }
+
+    &.summary {
+      font-weight: bold;
+      margin-top: 10px;
+      font-size: 1.2rem;
+    }
+  }
+
+  li {
+    margin-left: 20px;
   }
 `;
 
@@ -54,6 +76,7 @@ export const StyledLink = styled(Link)`
 `;
 
 export const FlexWrapper = styled.div`
+  margin: 10px 0;
   display: flex;
   justify-content: space-between;
 `;

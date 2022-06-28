@@ -9,6 +9,7 @@ import { RecipesProvider } from "./Providers/RecipesProvider";
 import FavRecipes from "./components/FavRecipes/FavRecipes";
 import Navigation from "./components/Navigation/Navigation";
 import { StyledMain } from "./App.styles";
+import RecipeInfo from "./components/RecipeInfo/RecipeInfo";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Routes>
             <Route path="/" element={<SearchRecipe />} />
             <Route path="/ulubione" element={<FavRecipes />} />
+            <Route path="/:id" element={<RecipeInfo />} />
           </Routes>
         </StyledMain>
         <Navigation />

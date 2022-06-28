@@ -4,6 +4,7 @@ import { ISingleRecipe } from "../types";
 export const useApi = (url: string) => {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState<ISingleRecipe[]>();
+  const [recipeInfo, setRecipeInfo] = useState<ISingleRecipe>();
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
@@ -13,6 +14,10 @@ export const useApi = (url: string) => {
         const response = await fetch(url);
         const json = await response.json();
         setData(json.results);
+        setRecipeInfo(json);
+        if (response.status === 402) {
+          setErrorMessage("Przekroczono limit zapytań do API");
+        }
       } catch (error) {
         setErrorMessage("Coś poszło nie tak, spróbuj odświeżyć stronę");
       }
@@ -22,5 +27,5 @@ export const useApi = (url: string) => {
     fetchData();
   }, [url]);
 
-  return { data, isLoading, errorMessage };
+  return { data, recipeInfo, isLoading, errorMessage };
 };

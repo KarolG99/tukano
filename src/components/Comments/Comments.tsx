@@ -1,4 +1,5 @@
 import React from 'react'
+
 import { IComments } from '../../types'
 import { CommentsWrapper } from './Comments.styles'
 

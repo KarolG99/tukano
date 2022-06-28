@@ -5,7 +5,7 @@ export type ISingleRecipe = {
   id: number;
   title: string;
   image: string;
-  nutrition: {
+  nutrition?: {
     nutrients: {
       name: string;
       amount: number;
@@ -14,6 +14,19 @@ export type ISingleRecipe = {
   };
   handleToggleFavRecipes?: React.MouseEventHandler<HTMLButtonElement>;
   handleAddComment?: React.MouseEventHandler<HTMLButtonElement>;
+  isRecipeInfo?: boolean;
+  readyInMinutes?: number;
+  vegetarian?: boolean;
+  vegan?: boolean;
+  glutenFree?: boolean;
+  dairyFree?: boolean;
+  healthScore?: number;
+  dishTypes?: string[];
+  extendedIngredients?: {
+    original?: string;
+    id?: number;
+  }[];
+  summary?: any;
 };
 
 export type ICommentInput = {
@@ -38,6 +51,21 @@ export type IErrorMessage = {
 // Comments.tsx
 export type IComments = {
   comment: string;
+};
+
+// SingleRecipeInfo.tsx
+export type ISingleRecipeInfo = {
+  header: string;
+  content: any;
+};
+
+// SearchRecipe.tsx
+export type ISearchInputs = {
+  query: string;
+  intolerances?: string;
+  diet?: string;
+  maxCalories?: number;
+  minCalories?: number;
 };
 
 

@@ -1,58 +1,162 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 
-import { useApi } from "../../hooks/useApi";
 import { RecipesContext } from "../../Providers/RecipesProvider";
-import { ISingleRecipe } from "../../types";
+import { ISearchInputs, ISingleRecipe } from "../../types";
+import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import SingleRecipe from "../SingleRecipe/SingleRecipe";
-import { Recipes, RecipesWrapper } from "./SearchRecipe.styles";
-
-const data2: ISingleRecipe[] = [
-  {
-    id: 123,
-    title: "PAsta with cos",
-    image: "https://spoonacular.com/recipeImages/654959-312x231.jpg",
-    nutrition: {
-      nutrients: [
-        {
-          name: "Fat",
-          amount: 10.2344,
-          unit: "g",
-        },
-        {
-          name: "Fat",
-          amount: 10.2344,
-          unit: "g",
-        },
-      ],
-    },
-  },
-  {
-    id: 456,
-    title: "Cos with cos",
-    image: "https://spoonacular.com/recipeImages/654959-312x231.jpg",
-    nutrition: {
-      nutrients: [
-        {
-          name: "CHude",
-          amount: 20.2344,
-          unit: "kg",
-        },
-      ],
-    },
-  },
-];
+import { StyledStatusInfo } from "../StatusInfo.styles";
+import {
+  Recipes,
+  RecipesWrapper,
+  StyledSearchForm,
+} from "./SearchRecipe.styles";
 
 const SearchRecipe = () => {
-  // const API_URL = process.env.REACT_APP_API_KEY;
-  // const url = `https://api.spoonacular.com/recipes/complexSearch?query=pasta&maxFat=50&number=5&apiKey=${API_URL}`;
-  // const { data, isLoading, errorMessage } = useApi(url);
+  const API_KEY = process.env.REACT_APP_API_KEY;
   const { handleToggleFavRecipes } = useContext(RecipesContext);
+  const [data, setData] = useState<ISingleRecipe[]>();
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ISearchInputs>({
+    defaultValues: { maxCalories: 800, minCalories: 50 },
+  });
+
+  const onSubmit: SubmitHandler<ISearchInputs> = ({
+    query,
+    intolerances,
+    diet,
+    maxCalories,
+    minCalories,
+  }) => {
+    const url = `https://api.spoonacular.com/recipes/complexSearch?apiKey=${API_KEY}&query=${query}&addRecipeNutrition=true${
+      intolerances && `&intolerances=${intolerances}`
+    }${diet && `&diet=${diet}`}${maxCalories && `&maxCalories=${maxCalories}`}${
+      minCalories && `&minCalories=${minCalories}`
+    }`;
+
+    const fetchData = async () => {
+      setIsSubmitted(false);
+      setIsLoading(true);
+      try {
+        const response = await fetch(url, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const json = await response.json();
+        setData(json.results);
+        if (response.status === 402) {
+          setErrorMessage("Przekroczono limit zapytań do API");
+        }
+      } catch (error) {
+        setErrorMessage("Coś poszło nie tak, spróbuj odświeżyć stronę");
+      }
+      setIsLoading(false);
+      setIsSubmitted(true);
+    };
+    if (url) {
+      fetchData();
+    }
+  };
 
   return (
     <RecipesWrapper>
+      <h2>Wyszukaj przepis</h2>
+      <StyledSearchForm onSubmit={handleSubmit(onSubmit)}>
+        {/* query */}
+        <label htmlFor="query">Przepis na:*</label>
+        <input
+          id="query"
+          {...register("query", { required: true, minLength: 2 })}
+          placeholder="Np. pasta"
+        />
+        {errors.query?.type === "required" && (
+          <ErrorMessage message="To pole jest wymagane" />
+        )}
+        {errors.query?.type === "minLength" && (
+          <ErrorMessage message="Wpisz conajmnijesz dwa znaki" />
+        )}
+
+        {/* intolerances */}
+        <label htmlFor="intolerances">Nietolerancja na:</label>
+        <input
+          id="intolerances"
+          {...register("intolerances", { minLength: 2 })}
+          placeholder="Np. gluten"
+        />
+        {errors.intolerances?.type === "minLength" && (
+          <ErrorMessage message="Wpisz conajmnijesz dwa znaki" />
+        )}
+
+        {/* diet */}
+        <label htmlFor="diet">Dieta:</label>
+        <input
+          id="diet"
+          {...register("diet", { minLength: 2 })}
+          placeholder="Np. vegetarian"
+        />
+        {errors.diet?.type === "minLength" && (
+          <ErrorMessage message="Wpisz conajmnijesz dwa znaki" />
+        )}
+
+        {/* maxCalories */}
+        <label htmlFor="maxCalories">Kalorie (max):</label>
+        <input
+          id="maxCalories"
+          {...register("maxCalories", {
+            min: 50,
+            max: 800,
+            valueAsNumber: true,
+          })}
+          placeholder="50-800"
+        />
+        {errors.maxCalories?.type === "min" && (
+          <ErrorMessage message="Minimalna wartość to 50" />
+        )}
+        {errors.maxCalories?.type === "max" && (
+          <ErrorMessage message="Maksymalna wartość to 800" />
+        )}
+
+        {/* minCalories */}
+        <label htmlFor="minCalories">Kalorie (min)</label>
+        <input
+          id="minCalories"
+          {...register("minCalories", {
+            min: 50,
+            max: 800,
+            valueAsNumber: true,
+          })}
+          placeholder="50-800"
+        />
+        {errors.minCalories?.type === "min" && (
+          <ErrorMessage message="Minimalna wartość to 50" />
+        )}
+        {errors.minCalories?.type === "max" && (
+          <ErrorMessage message="Maksymalna wartość to 800" />
+        )}
+
+        <button type="submit">Szukaj</button>
+      </StyledSearchForm>
+
       <Recipes>
-        {data2 &&
-          data2.map((recipe) => (
+        {isLoading && !errorMessage && (
+          <StyledStatusInfo>Ładowanie ... </StyledStatusInfo>
+        )}
+
+        {errorMessage && <StyledStatusInfo>{errorMessage}</StyledStatusInfo>}
+
+        {!data?.length && isSubmitted && (
+          <StyledStatusInfo>Nic nie znalazłem :(</StyledStatusInfo>
+        )}
+
+        {data &&
+          data.map((recipe) => (
             <SingleRecipe
               key={recipe.id}
               id={recipe.id}

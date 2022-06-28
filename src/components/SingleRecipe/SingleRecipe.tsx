@@ -1,9 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+
 import { RecipesContext } from "../../Providers/RecipesProvider";
 import { ICommentInput, ISingleRecipe } from "../../types";
 import Comments from "../Comments/Comments";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
+import SingleRecipeInfo from "../SingleRecipeInfo/SingleRecipeInfo";
 import {
   CommentButton,
   CommentIcon,
@@ -23,6 +25,16 @@ const SingleRecipe = ({
   image,
   nutrition,
   handleToggleFavRecipes,
+  isRecipeInfo = false,
+  readyInMinutes,
+  dishTypes,
+  vegetarian,
+  vegan,
+  glutenFree,
+  dairyFree,
+  healthScore,
+  extendedIngredients,
+  summary,
 }: ISingleRecipe) => {
   const { handleAddComment } = useContext(RecipesContext);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -48,7 +60,7 @@ const SingleRecipe = ({
   }, [reset, isSubmitted]);
 
   return (
-    <SingleRecipeWrapper>
+    <SingleRecipeWrapper isRecipeInfo={isRecipeInfo}>
       <FavButton onClick={handleToggleFavRecipes}>
         {StoredRecipes.find((el: { id: number }) => el.id === id) ? (
           <FavFillIcon />
@@ -59,24 +71,69 @@ const SingleRecipe = ({
 
       <img src={image} alt="zdjęcie posiłku" />
       <h3>{title}</h3>
-      <p className="nutrients">Składniki odżywcze:</p>
+      {nutrition && (
+        <>
+          <p className="nutrients">Składniki odżywcze:</p>
+          <StyledNutritionList>
+            {nutrition?.nutrients.map((nutrient, index) => (
+              <React.Fragment key={index}>
+                <li>
+                  {nutrient.name}:{" "}
+                  <i>
+                    {nutrient.amount}
+                    {nutrient.unit}
+                  </i>
+                </li>
+              </React.Fragment>
+            ))}
+          </StyledNutritionList>
+        </>
+      )}
 
-      <StyledNutritionList>
-        {nutrition.nutrients.map((nutrient, index) => (
-          <React.Fragment key={index}>
-            <li>
-              {nutrient.name}:{" "}
-              <i>
-                {nutrient.amount}
-                {nutrient.unit}
-              </i>
-            </li>
-          </React.Fragment>
-        ))}
-      </StyledNutritionList>
+      {isRecipeInfo && (
+        <>
+          <SingleRecipeInfo
+            header="gotowe w"
+            content={`${readyInMinutes}min`}
+          />
+          <SingleRecipeInfo
+            header="wegetariańskie"
+            content={vegetarian ? "Tak" : "Nie"}
+          />
+          <SingleRecipeInfo
+            header="wegańskie"
+            content={vegan ? "Tak" : "Nie"}
+          />
+          <SingleRecipeInfo
+            header="bezglutenowe"
+            content={glutenFree ? "Tak" : "Nie"}
+          />
+          <SingleRecipeInfo
+            header="nie zawiera nabiału"
+            content={dairyFree ? "Tak" : "Nie"}
+          />
+          <SingleRecipeInfo header="punkty zdrowia" content={healthScore} />
+          <SingleRecipeInfo
+            header="typ dania"
+            content={dishTypes?.join(", ")}
+          />
+          {extendedIngredients && (
+            <>
+              <p className="header-p">Składniki:</p>
+              <ul>
+                {extendedIngredients.map((ingredient) => (
+                  <li key={ingredient.id}>{ingredient.original}</li>
+                ))}
+              </ul>
+            </>
+          )}
+          <p className="summary">Podsumowanie:</p>
+          <span dangerouslySetInnerHTML={{ __html: `${summary}` }}></span>
+        </>
+      )}
 
       <FlexWrapper>
-        <StyledLink to="/">Więcej {">"}</StyledLink>
+        {!isRecipeInfo && <StyledLink to={`/${id}`}>Więcej {">"}</StyledLink>}
 
         <CommentButton onClick={() => setIsFormOpen((prev) => !prev)}>
           <CommentIcon />
