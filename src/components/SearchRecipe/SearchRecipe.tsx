@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 
 import { useApi } from "../../hooks/useApi";
-import { FavRecipesContext } from "../../Providers/FavRecipesProvider";
+import { RecipesContext } from "../../Providers/RecipesProvider";
 import { ISingleRecipe } from "../../types";
 import SingleRecipe from "../SingleRecipe/SingleRecipe";
 import { Recipes, RecipesWrapper } from "./SearchRecipe.styles";
@@ -46,7 +46,7 @@ const SearchRecipe = () => {
   // const API_URL = process.env.REACT_APP_API_KEY;
   // const url = `https://api.spoonacular.com/recipes/complexSearch?query=pasta&maxFat=50&number=5&apiKey=${API_URL}`;
   // const { data, isLoading, errorMessage } = useApi(url);
-  const { handleToggleFavRecipes } = useContext(FavRecipesContext);
+  const { handleToggleFavRecipes } = useContext(RecipesContext);
 
   return (
     <RecipesWrapper>
@@ -59,7 +59,7 @@ const SearchRecipe = () => {
               title={recipe.title}
               image={recipe.image}
               nutrition={recipe.nutrition}
-              onClick={() => handleToggleFavRecipes(recipe)}
+              handleToggleFavRecipes={() => handleToggleFavRecipes(recipe)}
             />
           ))}
       </Recipes>

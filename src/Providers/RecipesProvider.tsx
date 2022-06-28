@@ -1,16 +1,14 @@
 import { createContext, useState } from "react";
-import {
-  IFavRecipesContext,
-  IFavRecipesProvider,
-  ISingleRecipe,
-} from "../types";
+import { IRecipesContext, IRecipesProvider, ISingleRecipe } from "../types";
 
-export const FavRecipesContext = createContext<IFavRecipesContext>({
+export const RecipesContext = createContext<IRecipesContext>({
   handleToggleFavRecipes: () => {},
+  handleAddComment: () => {},
 });
 
-export const FavRecipesProvider = ({ children }: IFavRecipesProvider) => {
+export const RecipesProvider = ({ children }: IRecipesProvider) => {
   const [favRecipes, setFavRecipes] = useState<ISingleRecipe[]>([]);
+  const [comments, setComments] = useState<string[]>([]);
 
   const handleToggleFavRecipes = (recipe: ISingleRecipe) => {
     const storedRecipes = JSON.parse(
@@ -38,13 +36,26 @@ export const FavRecipesProvider = ({ children }: IFavRecipesProvider) => {
     }
   };
 
+  const handleAddComment = (content: string, id: number) => {
+    const storedComments = JSON.parse(localStorage.getItem("comments") || "[]");
+    localStorage.setItem(
+      "comments",
+      JSON.stringify([
+        content,
+        ...JSON.parse(localStorage.getItem("comments") || "[]"),
+      ])
+    );
+    setFavRecipes(storedComments);
+  };
+
   return (
-    <FavRecipesContext.Provider
+    <RecipesContext.Provider
       value={{
         handleToggleFavRecipes,
+        handleAddComment,
       }}
     >
       {children}
-    </FavRecipesContext.Provider>
+    </RecipesContext.Provider>
   );
 };

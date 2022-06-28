@@ -5,7 +5,7 @@ import { theme } from "./assets/styles/theme";
 import { GlobalStyle } from "./assets/styles/GlobalStyle";
 import { Route, Routes } from "react-router-dom";
 import SearchRecipe from "./components/SearchRecipe/SearchRecipe";
-import { FavRecipesProvider } from "./Providers/FavRecipesProvider";
+import { RecipesProvider } from "./Providers/RecipesProvider";
 import FavRecipes from "./components/FavRecipes/FavRecipes";
 import Navigation from "./components/Navigation/Navigation";
 import { StyledMain } from "./App.styles";
@@ -13,7 +13,7 @@ import { StyledMain } from "./App.styles";
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <FavRecipesProvider>
+      <RecipesProvider>
         <GlobalStyle />
         <StyledMain>
           <Routes>
@@ -22,7 +22,7 @@ function App() {
           </Routes>
         </StyledMain>
         <Navigation />
-      </FavRecipesProvider>
+      </RecipesProvider>
     </ThemeProvider>
   );
 }
