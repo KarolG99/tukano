@@ -121,8 +121,8 @@ const SingleRecipe = ({
             <>
               <p className="header-p">Składniki:</p>
               <ul>
-                {extendedIngredients.map((ingredient) => (
-                  <li key={ingredient.id}>{ingredient.original}</li>
+                {extendedIngredients.map((ingredient, index) => (
+                  <li key={index}>{ingredient.original}</li>
                 ))}
               </ul>
             </>
